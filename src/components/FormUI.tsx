@@ -1,7 +1,9 @@
 import React from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { Typography } from "@material-ui/core";
+import ErrorMessage from "./ErrorMessage";
+import { TextField } from "@material-ui/core";
+import Adaptfield from "./AdaptField";
 
 interface InitialValues {
   email?: string;
@@ -9,13 +11,12 @@ interface InitialValues {
 }
 
 const FormSchema = Yup.object().shape({
-  email: Yup.string()
-    .min(5, "Too short!")
-    .max(10, "Too long!")
-    .required("Email is required"),
+  email: Yup.string().min(10).max(30).required("Email is required"),
+  password: Yup.string().min(6, "Password must be 6 characters"),
 });
 
 const initialValues: InitialValues = { email: "", password: "" };
+const InputText = Adaptfield(TextField);
 
 const FormUi = () => {
   return (
@@ -31,13 +32,10 @@ const FormUi = () => {
     >
       {({ isSubmitting }) => (
         <Form>
-          <Field type="email" name="email" />
-          <ErrorMessage
-            name="email"
-            render={(msg) => <Typography color="secondary">{msg}</Typography>}
-          />
+          <Field component={InputText} type="email" name="email" />
+          <ErrorMessage name="email" />
           <Field type="password" name="password" />
-          <ErrorMessage name="password" component="div" />
+          <ErrorMessage name="password" />
           <button type="submit" disabled={isSubmitting}>
             Submit
           </button>
